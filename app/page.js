@@ -1,65 +1,158 @@
-import Image from "next/image";
+"use client"
+import Todo from '@/components/Todo'
+import axios from 'axios';
+import React, { useEffect, useState,useRef } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
 
-export default function Home() {
+const Page = () => {
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: ""
+  })
+  const [todosData, setTodosData] = useState([]);
+
+  const titleInputRef = useRef(null);
+  const descriptionRef = useRef(null);
+
+  // Auto-focus title input on page load
+  useEffect(() => {
+    titleInputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadTodos = async () => {
+      try {
+        const response = await axios.get("/api");
+        if (!mounted) return;
+        setTodosData(response.data?.todos ?? []);
+      } catch (err) {
+        console.error("Failed to fetch tasks:", err);
+      }
+    };
+
+    loadTodos();
+    return () => { mounted = false; };
+  }, [todosData]);
+
+  const deleteTodo = async (Id) => {
+    const response = await axios.delete('/api', {
+      params: {
+        mongoId: Id
+      }
+    })
+    toast.success(response.data.msg);
+  }
+  const completeTodo = async (Id) => {
+    const response = await axios.put('/api', {}, {
+      params: {
+        mongoId: Id
+      }
+    })
+    toast.success(response.data.msg);
+  }
+
+  const onChangeHandler = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormData(form => ({ ...form, [name]: value }));
+    // console.log(formData);
+  }
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+
+    // Validation: Check if fields are empty
+    if (!formData.title.trim() || !formData.description.trim()) {
+      toast.error("Both fields are required! Please fill in the form.");
+      titleInputRef.current?.focus();
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api", formData);
+      toast.success(response.data.msg);
+      setFormData({
+        title: "",
+        description: ""
+      })
+      titleInputRef.current?.focus();
+
+    } catch (error) {
+      toast.error("Error occured!")
+    }
+  }
+
+  // Handle Enter key in description textarea to submit
+  const handleDescriptionKeyDown = (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      onSubmitHandler(e);
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <ToastContainer theme='dark' />
+      <div className='container mx-auto flex flex-col items-center gap-16 max-h-[85vh] '>
+        {/* form */}
+        <form onSubmit={onSubmitHandler} className='flex flex-col w-sm md:w-md lg:w-xl px-2 md:px-4 items-start justify-center mt-12 gap-4'>
+          <input
+            ref={titleInputRef}
+            onChange={onChangeHandler}
+            value={formData.title}
+            type="text"
+            name='title'
+            placeholder='Enter Task Title'
+            className='w-full px-3 py-2 outline-2 outline-green-400/35 rounded-sm'
+          />
+          <textarea
+            ref={descriptionRef}
+            onChange={onChangeHandler}
+            value={formData.description}
+            name="description"
+            placeholder='Enter Task Description (Ctrl+Enter to submit)'
+            onKeyDown={handleDescriptionKeyDown}
+            className='w-full px-3 py-2 h-16 outline-2 outline-green-400/35 rounded-sm'
+          />
+          <button type="submit" className='px-8 py-2 hover:cursor-pointer bg-green-400/80 rounded-sm'>Add Task</button>
+        </form>
+        {/* table */}
+        <div className="w-sm md:w-xl max-h-100 overflow-y-scroll lg:w-2/3 overflow-x-auto  shadow-xs rounded-md border border-white/75">
+          <table className="text-sm w-full text-left rtl:text-right">
+            <thead className="text-sm text-body bg-green-400/20 border-b border-default-medium">
+              <tr>
+                <th scope="col" className="px-6 py-3 font-medium">
+                  Id
+                </th>
+                <th scope="col" className="px-6 py-3 font-medium">
+                  Title
+                </th>
+                <th scope="col" className="px-6 py-3 font-medium">
+                  Description
+                </th>
+                <th scope="col" className="px-6 py-3 font-medium">
+                  Status
+                </th>
+                <th scope="col" className="px-6 py-3 font-medium">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className=''>
+              {
+                todosData.map((todo, index) => {
+                  return <Todo key={index} id={index} title={todo.title} description={todo.description} complete={todo.isCompleted} mongoId={todo._id} deleteTodo={deleteTodo} completeTodo={completeTodo} />
+                })
+              }
+            </tbody>
+          </table>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+
+      </div>
+    </>
+  )
 }
+
+export default Page
