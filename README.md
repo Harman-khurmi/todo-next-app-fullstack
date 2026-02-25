@@ -38,21 +38,6 @@ A complete full-stack todo application demonstrating modern web development prac
 - **Babel React Compiler** - Optimization
 - **PostCSS** - CSS processing
 
-## 📁 Project Structure
-todo-list-full-stack/
-├── app/
-│ ├── route.js # API endpoints
-│ ├── layout.js # Root layout
-│ ├── page.js # Main page
-│ └── globals.css # Global styles
-├── components/
-│ ├── Navbar.jsx # Navigation
-│ └── Todo.jsx # Todo item
-├── db.js # DB connection
-├── public/ # Assets
-└── package.json # Dependencies
-
-
 ## ⚡ Getting Started
 
 ### Prerequisites
