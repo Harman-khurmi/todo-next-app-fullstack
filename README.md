@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Todo List Full Stack Application
 
-## Getting Started
+A modern, full-stack todo list application built with Next.js, React, and MongoDB. Create, manage, and organize daily tasks with a clean and intuitive interface.
 
-First, run the development server:
+## 📋 Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A complete full-stack todo application demonstrating modern web development practices. Add tasks instantly without page reloads and manage them seamlessly.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Auto-focus Input** - Title field focused on page load for instant task entry
+- **Keyboard Navigation** - Tab between fields, Ctrl+Enter to submit
+- **Form Validation** - Prevents empty submissions with error messages
+- **Smart Cursor** - Returns to title field after submission or validation error
+- **Real-time Updates** - Tasks displayed without page refresh
+- **Responsive Design** - Mobile, tablet, and desktop compatible
+- **Dark Theme** - Modern UI with green accent colors
+- **Instant Creation** - Add tasks without page reload
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack
 
-## Learn More
+### Frontend
+- **Next.js 16.1.6** - React framework
+- **React 19.2.3** - UI library
+- **Tailwind CSS 4** - Styling
+- **Axios** - HTTP client
+- **React Toastify** - Notifications
+- **Lucide React** - Icons
 
-To learn more about Next.js, take a look at the following resources:
+### Backend & Database
+- **Next.js API Routes** - Serverless endpoints
+- **Node.js** - Runtime
+- **MongoDB** - NoSQL database
+- **Mongoose 9.2.2** - ODM
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Development
+- **ESLint** - Linting
+- **Babel React Compiler** - Optimization
+- **PostCSS** - CSS processing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Project Structure
+todo-list-full-stack/
+├── app/
+│ ├── route.js # API endpoints
+│ ├── layout.js # Root layout
+│ ├── page.js # Main page
+│ └── globals.css # Global styles
+├── components/
+│ ├── Navbar.jsx # Navigation
+│ └── Todo.jsx # Todo item
+├── db.js # DB connection
+├── public/ # Assets
+└── package.json # Dependencies
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## ⚡ Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Prerequisites
+- Node.js v16+
+- npm/yarn
+- MongoDB Atlas account
+
+📝 Usage
+Page loads - title input auto-focused
+Enter task title
+Press Tab → move to description
+Enter task description
+Press Ctrl+Enter OR click "Add Task"
+Validation checks both fields are filled
+On success, form clears and cursor returns to title
+Tasks display in table below form
+
+🎨 Styling
+Tailwind CSS with dark theme (bg-zinc-950, text-white) and green accents. Mobile-first responsive design using Tailwind breakpoints.
+
+🔄 Key Features Explained
+Auto-focus & Keyboard
+Title auto-focused on load
+Natural tab navigation
+Ctrl+Enter submits from textarea
+Validation
+Both fields required
+Error toast on empty submission
+Focus returns to title for correction
+Database
+MongoDB connection via db.js
+Connects on server startup
+Mongoose schema validation
+🚀 Future Enhancements
+Edit/delete todos
+Mark complete/incomplete
+Filter by status
+Search functionality
+Due dates
+User authentication
+Drag-and-drop ordering
+
+---
+
+Happy Task Managing!
