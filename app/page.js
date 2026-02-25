@@ -136,7 +136,7 @@ const Page = () => {
                   Status
                 </th>
                 <th scope="col" className="px-6 py-3 font-medium">
-                  Action
+                  Actions
                 </th>
               </tr>
             </thead>
